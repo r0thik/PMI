@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Каталог — Локальный сайт{% endblock %}
+{% block content %}
+<section id="catalog">
+  <h2>Каталог товаров</h2>
+
+  <div class="catalog-filters">
+    <form method="get" action="{{ url_for('catalog') }}">
+      <label class="desc">
+        Жанр:
+        <select name="genre" onchange="this.form.submit()">
+          <option value="">Все жанры</option>
+          {% for g in genres %}
+          <option value="{{ g.genre }}" {% if current_genre == g.genre %}selected{% endif %}>{{ g.genre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <noscript>
+        <button type="submit" class="btn btn-ghost">Фильтровать</button>
+      </noscript>
+    </form>
+  </div>
+
+  <div class="catalog-grid">
+    {% for item in items %}
+    <article class="card card-hover">
+      {% if item.image %}
+      <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.title }}" style="width:100%;height:auto;border-radius:8px;aspect-ratio:16/9;object-fit:cover;background:#16324a" onerror="this.style.display='none'">
+      {% else %}
+      <div class="placeholder-img" aria-hidden="true"></div>
+      {% endif %}
+      <h3>{{ item.title }}</h3>
+      {% if item.genre %}
+      <p class="desc">Жанр: {{ item.genre }}</p>
+      {% endif %}
+      <div class="price">{{ item.price }}</div>
+      <p class="desc">{{ item.description }}</p>
+      <div>
+        <form method="post" action="{{ url_for('buy', product_id=item.id) }}">
+          <button type="submit" class="btn btn-primary">Купить</button>
+        </form>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  
+</section>
+{% endblock %}

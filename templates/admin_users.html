@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Админка — пользователи{% endblock %}
+{% block content %}
+<section id="admin-users">
+  <h2>Управление пользователями</h2>
+
+  <p class="desc">
+    <a href="{{ url_for('admin.products') }}">Товары</a> ·
+    <a href="{{ url_for('admin.users') }}">Пользователи</a> ·
+    <a href="{{ url_for('admin.content_index') }}">Контент</a>
+  </p>
+
+  {% if not users %}
+    <p class="desc">Пользователей пока нет.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Аккаунт</th>
+          <th>Баланс</th>
+          <th>Админ</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.user_update', user_id=u.id) }}" class="admin-inline-form admin-user-main-form">
+              <div>
+                <label class="desc">Логин</label>
+                <input type="text" name="username" value="{{ u.username }}" />
+              </div>
+              <div>
+                <label class="desc">Email</label>
+                <input type="email" name="email" value="{{ u.email }}" />
+              </div>
+              <div>
+                <label class="desc">Пароль</label>
+                <input type="text" name="password" placeholder="Новый пароль (опционально)" />
+              </div>
+              <button type="submit" class="btn btn-ghost">Сохранить данные</button>
+            </form>
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('admin.user_set_balance', user_id=u.id) }}" class="admin-inline-form">
+              <span class="desc">{{ '%.2f'|format(u.balance or 0) }}</span>
+              <input type="text" name="balance" value="{{ '%.2f'|format(u.balance or 0) }}" />
+              <button type="submit" class="btn btn-ghost">Сохранить баланс</button>
+            </form>
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('admin.user_set_admin', user_id=u.id) }}" class="admin-inline-form">
+              <select name="is_admin">
+                <option value="0" {% if not u.is_admin %}selected{% endif %}>Нет</option>
+                <option value="1" {% if u.is_admin %}selected{% endif %}>Да</option>
+              </select>
+              <button type="submit" class="btn btn-ghost">Сохранить роль</button>
+            </form>
+          </td>
+          <td>
+            <a href="{{ url_for('admin.user_orders', user_id=u.id) }}" class="btn btn-ghost">Заказы и ключи</a>
+            <form method="post" action="{{ url_for('admin.user_delete', user_id=u.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить пользователя? Все его заказы и ключи тоже будут удалены.');">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h3>Добавить пользователя</h3>
+  <form method="post" action="{{ url_for('admin.user_add') }}" class="admin-form">
+    <label>
+      Логин
+      <input type="text" name="username" required />
+    </label>
+    <label>
+      Email
+      <input type="email" name="email" required />
+    </label>
+    <label>
+      Пароль
+      <input type="password" name="password" required />
+    </label>
+    <label>
+      Баланс
+      <input type="text" name="balance" value="0" />
+    </label>
+    <label>
+      Администратор?
+      <select name="is_admin">
+        <option value="0" selected>Нет</option>
+        <option value="1">Да</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Создать пользователя</button>
+  </form>
+</section>
+{% endblock %}

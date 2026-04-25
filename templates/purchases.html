@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Мои покупки — Локальный сайт{% endblock %}
+{% block content %}
+<section id="purchases">
+  <h2>Мои покупки</h2>
+
+  {% if not current_user %}
+    <p class="desc">Для просмотра истории покупок нужно <a href="{{ url_for('auth.login_get') }}">войти</a>.</p>
+  {% else %}
+    {% if not purchases %}
+      <p class="desc">Вы ещё ничего не купили.</p>
+    {% else %}
+      <div class="catalog-grid">
+        {% for p in purchases %}
+        <article class="card">
+          <h3>{{ p.title }}</h3>
+          <p class="desc">Ключ: <code>{{ p.key_value }}</code></p>
+          <p class="desc">Дата покупки: {{ p.created_at|datetime_ru }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

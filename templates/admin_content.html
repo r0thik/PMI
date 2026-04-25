@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Контент — Админка{% endblock %}
+{% block content %}
+<section id="admin-content">
+  <h2>Управление контентом</h2>
+  <p class="desc">
+    <a href="{{ url_for('admin.products') }}">Товары</a> ·
+    <a href="{{ url_for('admin.users') }}">Пользователи</a> ·
+    <a href="{{ url_for('admin.content_index') }}">Контент</a>
+  </p>
+
+  <hr>
+
+  <h3>Новости</h3>
+  {% if not news %}
+    <p class="desc">Новостей пока нет.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Заголовок</th>
+          <th>Краткое описание</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for n in news %}
+        <tr>
+          <td>{{ n.date|datetime_ru }}</td>
+          <td>{{ n.title }}</td>
+          <td>{{ n.summary }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.content_news_delete', item_id=n.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить новость?');">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h4>Добавить новость</h4>
+  <form method="post" action="{{ url_for('admin.content_news_add') }}" class="admin-form">
+    <label>
+      Дата
+      <input type="date" name="date" required />
+    </label>
+    <label>
+      Заголовок
+      <input type="text" name="title" required />
+    </label>
+    <label>
+      Краткое описание
+      <input type="text" name="summary" />
+    </label>
+    <button type="submit" class="btn btn-primary">Добавить новость</button>
+  </form>
+
+  <hr>
+
+  <h3>Партнёры / организации</h3>
+  {% if not partners %}
+    <p class="desc">Организаций пока нет.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Название</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in partners %}
+        <tr>
+          <td>{{ p.name }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.content_partners_delete', item_id=p.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить организацию?');">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h4>Добавить организацию</h4>
+  <form method="post" action="{{ url_for('admin.content_partners_add') }}" class="admin-form">
+    <label>
+      Название
+      <input type="text" name="name" required />
+    </label>
+    <button type="submit" class="btn btn-primary">Добавить организацию</button>
+  </form>
+
+  <hr>
+
+  <h3>Праздники</h3>
+  {% if not holidays %}
+    <p class="desc">Праздников пока нет.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Название</th>
+          <th>Примечание</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in holidays %}
+        <tr>
+          <td>{{ h.date|datetime_ru }}</td>
+          <td>{{ h.name }}</td>
+          <td>{{ h.note }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.content_holidays_delete', item_id=h.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить праздник?');">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h4>Добавить праздник</h4>
+  <form method="post" action="{{ url_for('admin.content_holidays_add') }}" class="admin-form">
+    <label>
+      Дата
+      <input type="date" name="date" required />
+    </label>
+    <label>
+      Название
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      Примечание
+      <input type="text" name="note" />
+    </label>
+    <button type="submit" class="btn btn-primary">Добавить праздник</button>
+  </form>
+
+  <hr>
+
+  <h3>Изменения в прайсе / каталоге</h3>
+  {% if not price_updates %}
+    <p class="desc">Записей пока нет.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Текст</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in price_updates %}
+        <tr>
+          <td>{{ u.date|datetime_ru }}</td>
+          <td>{{ u.text }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.content_price_updates_delete', item_id=u.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить запись об изменении прайса?');">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h4>Добавить запись об изменении прайса</h4>
+  <form method="post" action="{{ url_for('admin.content_price_updates_add') }}" class="admin-form">
+    <label>
+      Дата
+      <input type="date" name="date" required />
+    </label>
+    <label>
+      Текст
+      <input type="text" name="text" required />
+    </label>
+    <button type="submit" class="btn btn-primary">Добавить запись</button>
+  </form>
+</section>
+{% endblock %}

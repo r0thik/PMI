@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Вход — Локальный сайт{% endblock %}
+{% block content %}
+<section id="login">
+  <h2>Логин</h2>
+  <div class="card card-form">
+    <form class="auth-form" method="post" action="{{ url_for('auth.login_post') }}">
+      <label>
+        Логин
+        <input type="text" name="username" placeholder="Введите логин" />
+      </label>
+      <label>
+        Пароль
+        <input type="password" name="password" placeholder="Введите пароль" />
+      </label>
+      <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+  </div>
+  <p class="desc">Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>.</p>
+</section>
+{% endblock %}

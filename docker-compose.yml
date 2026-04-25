@@ -1,0 +1,55 @@
+
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: steam_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - steam-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: steam_web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:1234@postgres:5432/steam_db
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      SECRET_KEY: SECRET_KEY_forsite
+      FLASK_ENV: development
+      FLASK_DEBUG: "true"
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    networks:
+      - steam-network
+    command: >
+      sh -c "sleep 5 && python app.py"
+
+networks:
+  steam-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

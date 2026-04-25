@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Заказы пользователя — Админка{% endblock %}
+{% block content %}
+<section id="admin-user-orders">
+  <h2>Заказы пользователя {{ user.username }}</h2>
+  <p class="desc">
+    <a href="{{ url_for('admin.products') }}">Товары</a> ·
+    <a href="{{ url_for('admin.users') }}">Пользователи</a> ·
+    <a href="{{ url_for('admin.content_index') }}">Контент</a>
+  </p>
+
+  {% if not orders %}
+    <p class="desc">У этого пользователя ещё нет заказов.</p>
+  {% else %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID заказа</th>
+          <th>Дата</th>
+          <th>Товар</th>
+          <th>Ключ</th>
+          <th>Сумма заказа</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td>{{ o.order_id }}</td>
+          <td>{{ o.created_at|datetime_ru }}</td>
+          <td>{{ o.product_title }}</td>
+          <td><code>{{ o.key_value }}</code></td>
+          <td>{{ '%.2f'|format(o.total or 0) }} ₽</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <p class="desc" style="margin-top:1rem;">
+    <a href="{{ url_for('admin.users') }}" class="btn btn-ghost">← Назад к пользователям</a>
+  </p>
+</section>
+{% endblock %}

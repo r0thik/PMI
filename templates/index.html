@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Главная — Локальный сайт{% endblock %}
+
+{% block content %}
+<section id="news">
+  <h2>Новости</h2>
+  <ul class="news-list">
+    {% for n in news %}
+      <li><strong>{{ n.title }}</strong> — {{ n.summary }} <span class="desc">({{ n.date|datetime_ru }})</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section id="orgs">
+  <h2>Другие организации</h2>
+  <div class="grid org-grid">
+    {% for p in partners %}
+    <div class="card card-hover">
+      <div class="placeholder-img" aria-hidden="true"></div>
+      <div class="desc">{{ p.name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="holidays">
+  <h2>Праздники</h2>
+  <ul class="news-list">
+    {% for h in holidays %}
+      <li><strong>{{ h.name }}</strong> — {{ h.date|datetime_ru }} <span class="desc">{{ h.note }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section id="updates">
+  <h2>Изменения в прайсе/каталоге</h2>
+  <ul class="timeline">
+    {% for u in price_updates %}
+      <li>{{ u.date|datetime_ru }} — {{ u.text }}</li>
+    {% endfor %}
+  </ul>
+  <p><a class="btn btn-ghost" href="/catalog">Перейти в каталог →</a></p>
+</section>
+{% endblock %}
